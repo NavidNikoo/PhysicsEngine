@@ -1,0 +1,12 @@
+# ninja log v6
+622	641	1752781700928728390	libgraphics.a	49c728ecc77c4601
+16	674	1752801480495740356	CMakeFiles/PhysicsEngine.dir/src/main.cpp.o	f8b88f315352aa2d
+4	339	1752784537790252208	CMakeFiles/glad.dir/src/physics/RigidBody.cpp.o	b827688d7d8debd4
+3	351	1752711227287454724	CMakeFiles/glad.dir/src/graphics/Renderer.cpp.o	a51c916656aa5a75
+674	779	1752801481153448030	PhysicsEngine	77d9050782b74349
+3	379	1752711227287590682	CMakeFiles/glad.dir/src/graphics/Shader.cpp.o	61a4d71f0a198822
+9	622	1752781700315840749	CMakeFiles/graphics.dir/src/graphics/Shader.cpp.o	afd7d02dffbb996b
+339	361	1752784538125440177	libglad.a	8df49574dc5ed2ba
+9	583	1752781700315462583	CMakeFiles/graphics.dir/src/graphics/Renderer.cpp.o	9bfc3a22200623b1
+7	201	1752781700313496376	CMakeFiles/glad.dir/Users/navidnikoo/Dependencies/glad/src/glad.c.o	8b918d4472d22329
+2	47	1752801668818914149	build.ninja	ce75741b52c84585
