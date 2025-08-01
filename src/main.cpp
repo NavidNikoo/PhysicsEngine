@@ -3,14 +3,41 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
-#include <vector>
 
 #include "graphics/Renderer.h"
 #include "graphics/Shader.h"
-#include "physics/RigidBody.h"
+#include "core/Scene.h"
+#include "core/Camera.h"
+
+// Window size
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+// Mouse input
+bool firstMouse = true;
+double lastX = SCR_WIDTH / 2.0f;
+double lastY = SCR_HEIGHT / 2.0f;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    Camera* cam = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed y
+
+    lastX = xpos;
+    lastY = ypos;
+
+    cam->ProcessMouseMovement(xoffset, yoffset);
 }
 
 int main() {
@@ -27,7 +54,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Physics Engine", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Physics Engine", nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window\n";
         glfwTerminate();
@@ -35,6 +62,7 @@ int main() {
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize GLAD\n";
@@ -42,115 +70,65 @@ int main() {
     }
 
     glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, 800, 600);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     Shader shader(SHADER_DIR "/basic.vert", SHADER_DIR "/basic.frag");
     Renderer renderer;
+    Scene scene;
+    Camera camera;
 
+    // Mouse input setup
+    glfwSetWindowUserPointer(window, &camera);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    // Projection (orthographic or perspective can be swapped easily here)
     glm::mat4 projection = glm::perspective(
         glm::radians(45.0f),
-        800.0f / 600.0f,
+        static_cast<float>(SCR_WIDTH) / SCR_HEIGHT,
         0.1f,
         100.0f
     );
 
-    // Create rigid body
-    std::vector<RigidBody> bodies;
-    for (int i = 0; i < 5; ++i) {
-        bodies.emplace_back(1.0f, glm::vec3(0.0f, i * 1.1f, 0.0f));
-    }
-
-    float lastTime = glfwGetTime();
+    const float fixedDeltaTime = 0.016f; // 60 FPS physics
+    float accumulator = 0.0f;
+    float currentTime = glfwGetTime();
 
     while (!glfwWindowShouldClose(window)) {
-        float currentTime = glfwGetTime();
-        float deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
+        float newTime = glfwGetTime();
+        float frameTime = newTime - currentTime;
+        currentTime = newTime;
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        accumulator += frameTime;
+
+        // Handle input once per frame (not per physics step)
+        scene.HandleInput(window);
+        camera.HandleInput(window, frameTime);
+
+        // Physics updates at fixed time step
+        while (accumulator >= fixedDeltaTime) {
+            scene.StepPhysics(fixedDeltaTime);
+            accumulator -= fixedDeltaTime;
+        }
+
+        // Render
+        glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.use();
-        glm::mat4 view = glm::lookAt(
-            glm::vec3(0.0f, 0.0f, 8.0f),
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(0.0f, 1.0f, 0.0f)
-        );
+
+        glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("view", &view[0][0]);
         shader.setMat4("projection", &projection[0][0]);
+        shader.setVec3("lightPos", glm::vec3(5.0f, 10.0f, 5.0f));
+        shader.setVec3("viewPos", camera.position);
 
-        for (RigidBody& body : bodies) {
-            body.ApplyForce(glm::vec3(0.0f, -9.81f, 0.0f) * body.mass);
-            body.Integrate(deltaTime);
-
-            float sideForce = ((rand() % 200) - 100) / 5000.0f; // Small random [-0.02, 0.02]
-            body.ApplyForce(glm::vec3(sideForce, 0.0f, 0.0f));
-
-            if (body.position.y < -1.0f) {
-                body.position.y = -1.0f;
-                body.velocity.y *= -0.5f;
-            }
-
-            if (body.position.y <= -1.0f) {
-                body.velocity.x *= 0.8f;  // Simulate horizontal ground friction
-            }
-
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), body.position);
-            renderer.DrawCube(model, shader);
-        }
-
-        for (size_t i = 0; i < bodies.size(); ++i) {
-            for (size_t j = i + 1; j < bodies.size(); ++j) {
-                AABB a = bodies[i].GetAABB();
-                AABB b = bodies[j].GetAABB();
-
-                if (CheckAABBCollision(a, b)) {
-                    glm::vec3 overlap;
-                    overlap.x = std::min(a.max.x, b.max.x) - std::max(a.min.x, b.min.x);
-                    overlap.y = std::min(a.max.y, b.max.y) - std::max(a.min.y, b.min.y);
-                    overlap.z = std::min(a.max.z, b.max.z) - std::max(a.min.z, b.min.z);
-
-                    // Find the smallest axis of penetration
-                    if (overlap.y < overlap.x) {
-                        // Resolve in Y (vertical stacking)
-                        if (bodies[i].position.y > bodies[j].position.y) {
-                            bodies[i].position.y += overlap.y / 2.0f;
-                            bodies[j].position.y -= overlap.y / 2.0f;
-                        } else {
-                            bodies[i].position.y -= overlap.y / 2.0f;
-                            bodies[j].position.y += overlap.y / 2.0f;
-                        }
-
-                        // Bounce in Y
-                        bodies[i].velocity.y *= -0.5f;
-                        bodies[j].velocity.y *= -0.5f;
-                    } else {
-                        // Resolve in X (horizontal separation)
-                        if (bodies[i].position.x > bodies[j].position.x) {
-                            bodies[i].position.x += overlap.x / 2.0f;
-                            bodies[j].position.x -= overlap.x / 2.0f;
-                        } else {
-                            bodies[i].position.x -= overlap.x / 2.0f;
-                            bodies[j].position.x += overlap.x / 2.0f;
-                        }
-
-                        // Friction effect: dampen X velocity
-                        bodies[i].velocity.x *= -0.3f;
-                        bodies[j].velocity.x *= -0.3f;
-                    }
-
-                }
-            }
-        }
-
+        scene.Render(renderer, shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    // ⬇️ Properly terminate AFTER the loop
+
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
-
 }

@@ -1,8 +1,25 @@
-//
-// Created by Navid Nikoo on 7/17/25.
-//
+#pragma once
 
-#ifndef SCENE_H
-#define SCENE_H
+#include <vector>
+#include <GLFW/glfw3.h>
+#include "physics/bodies/RigidBody.h"
+#include "graphics/Renderer.h"
+#include "graphics/Shader.h"
+#include "physics/collision/ContactSolver.h"
 
-#endif //SCENE_H
+class Scene {
+public:
+    Scene();
+    ContactSolver solver;
+
+    void StepPhysics(float dt);
+    void Render(Renderer& renderer, Shader& shader);
+    void RenderDebug(Renderer& renderer, const glm::mat4& viewProj);
+    void HandleInput(GLFWwindow* window);
+
+private:
+    std::vector<RigidBody> bodies;
+
+    // ✅ Fix: Declare the correct collision function
+    void ResolveCollision(RigidBody& a, RigidBody& b, const glm::vec3& overlap);
+};

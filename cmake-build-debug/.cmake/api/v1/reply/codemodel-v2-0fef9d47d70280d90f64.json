@@ -43,21 +43,21 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "PhysicsEngine::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-PhysicsEngine-Debug-602b5a0d5564fbf65cb8.json",
+					"jsonFile" : "target-PhysicsEngine-Debug-d587bfbbfdb94a5fc5d5.json",
 					"name" : "PhysicsEngine",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
-					"id" : "glad::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-glad-Debug-1d1705bb76cb92eb14c4.json",
-					"name" : "glad",
+					"id" : "core::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-core-Debug-0e065a867ed545f5087a.json",
+					"name" : "core",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "graphics::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-graphics-Debug-9fbc452fc15fba175355.json",
+					"jsonFile" : "target-graphics-Debug-9bf413bcf11e07d69d41.json",
 					"name" : "graphics",
 					"projectIndex" : 0
 				}

@@ -27,13 +27,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 30,
+				"line" : 41,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 46,
+				"line" : 57,
 				"parent" : 0
 			},
 			{
@@ -73,6 +73,10 @@
 				{
 					"backtrace" : 3,
 					"path" : "/opt/homebrew/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src"
 				}
 			],
 			"language" : "CXX",

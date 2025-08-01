@@ -13,20 +13,31 @@ set(GLM_DIR "${DEPENDENCY_DIR}/glm-master")
 include_directories(
         ${GLAD_DIR}/include
         ${GLM_DIR}
-        /opt/homebrew/include    # For GLFW via Homebrew
+        /opt/homebrew/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-# Link paths
 link_directories(/opt/homebrew/lib)
 
-# Add GLAD library
-add_library(glad STATIC ${GLAD_DIR}/src/glad.c
-        src/physics/RigidBody.cpp
-        src/physics/RigidBody.h
+# Add core (physics and scene)
+add_library(core STATIC
+        ${GLAD_DIR}/src/glad.c
         src/core/Scene.cpp
-        src/core/Scene.h)
+        src/core/Camera.cpp
+        src/physics/bodies/RigidBody.cpp
+        src/physics/collision/ContactSolver.cpp
+        src/physics/collision/Collision.h
+        src/physics/collision/Collider.h
+        src/physics/collision/AABB.h
+        src/physics/shapes/BoxShape.h
+        src/physics/shapes/Shape.h
+        src/physics/collision/ContactManifold.h
+        src/physics/collision/SATCollision.h
+        src/physics/collision/SATCollision.cpp
+)
 
-# Add graphics library (Renderer and Shader)
+
+# Add graphics
 add_library(graphics STATIC
         src/graphics/Renderer.cpp
         src/graphics/Shader.cpp
@@ -35,10 +46,10 @@ add_library(graphics STATIC
 # Add executable
 add_executable(PhysicsEngine src/main.cpp)
 
-# Link libraries to PhysicsEngine executable
+# Link libraries
 target_link_libraries(PhysicsEngine
-        glad
         graphics
+        core
         glfw
         OpenGL::GL
 )

@@ -28,7 +28,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 36,
+				"line" : 47,
 				"parent" : 0
 			},
 			{
@@ -40,13 +40,13 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 39,
+				"line" : 50,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 46,
+				"line" : 57,
 				"parent" : 0
 			},
 			{
@@ -94,6 +94,10 @@
 				{
 					"backtrace" : 5,
 					"path" : "/opt/homebrew/include"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src"
 				}
 			],
 			"language" : "CXX",
@@ -115,7 +119,7 @@
 	[
 		{
 			"backtrace" : 3,
-			"id" : "glad::@6890427a1f51a3e7e1df"
+			"id" : "core::@6890427a1f51a3e7e1df"
 		},
 		{
 			"backtrace" : 3,
@@ -146,12 +150,12 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "libglad.a",
+				"fragment" : "libgraphics.a",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "libgraphics.a",
+				"fragment" : "libcore.a",
 				"role" : "libraries"
 			},
 			{

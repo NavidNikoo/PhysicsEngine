@@ -41,54 +41,78 @@ include CMakeFiles/rules.ninja
 
 cmake_ninja_workdir = /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/cmake-build-debug/
 # =============================================================================
-# Object build statements for STATIC_LIBRARY target glad
+# Object build statements for STATIC_LIBRARY target core
 
 
 #############################################
-# Order-only phony target for glad
+# Order-only phony target for core
 
-build cmake_object_order_depends_target_glad: phony || .
+build cmake_object_order_depends_target_core: phony || .
 
-build CMakeFiles/glad.dir/Users/navidnikoo/Dependencies/glad/src/glad.c.o: C_COMPILER__glad_unscanned_Debug /Users/navidnikoo/Dependencies/glad/src/glad.c || cmake_object_order_depends_target_glad
+build CMakeFiles/core.dir/Users/navidnikoo/Dependencies/glad/src/glad.c.o: C_COMPILER__core_unscanned_Debug /Users/navidnikoo/Dependencies/glad/src/glad.c || cmake_object_order_depends_target_core
   DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
-  DEP_FILE = CMakeFiles/glad.dir/Users/navidnikoo/Dependencies/glad/src/glad.c.o.d
+  DEP_FILE = CMakeFiles/core.dir/Users/navidnikoo/Dependencies/glad/src/glad.c.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
-  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include
-  OBJECT_DIR = CMakeFiles/glad.dir
-  OBJECT_FILE_DIR = CMakeFiles/glad.dir/Users/navidnikoo/Dependencies/glad/src
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src
+  OBJECT_DIR = CMakeFiles/core.dir
+  OBJECT_FILE_DIR = CMakeFiles/core.dir/Users/navidnikoo/Dependencies/glad/src
 
-build CMakeFiles/glad.dir/src/physics/RigidBody.cpp.o: CXX_COMPILER__glad_unscanned_Debug /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src/physics/RigidBody.cpp || cmake_object_order_depends_target_glad
+build CMakeFiles/core.dir/src/core/Scene.cpp.o: CXX_COMPILER__core_unscanned_Debug /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src/core/Scene.cpp || cmake_object_order_depends_target_core
   DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
-  DEP_FILE = CMakeFiles/glad.dir/src/physics/RigidBody.cpp.o.d
+  DEP_FILE = CMakeFiles/core.dir/src/core/Scene.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
-  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include
-  OBJECT_DIR = CMakeFiles/glad.dir
-  OBJECT_FILE_DIR = CMakeFiles/glad.dir/src/physics
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src
+  OBJECT_DIR = CMakeFiles/core.dir
+  OBJECT_FILE_DIR = CMakeFiles/core.dir/src/core
 
-build CMakeFiles/glad.dir/src/core/Scene.cpp.o: CXX_COMPILER__glad_unscanned_Debug /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src/core/Scene.cpp || cmake_object_order_depends_target_glad
+build CMakeFiles/core.dir/src/core/Camera.cpp.o: CXX_COMPILER__core_unscanned_Debug /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src/core/Camera.cpp || cmake_object_order_depends_target_core
   DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
-  DEP_FILE = CMakeFiles/glad.dir/src/core/Scene.cpp.o.d
+  DEP_FILE = CMakeFiles/core.dir/src/core/Camera.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
-  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include
-  OBJECT_DIR = CMakeFiles/glad.dir
-  OBJECT_FILE_DIR = CMakeFiles/glad.dir/src/core
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src
+  OBJECT_DIR = CMakeFiles/core.dir
+  OBJECT_FILE_DIR = CMakeFiles/core.dir/src/core
+
+build CMakeFiles/core.dir/src/physics/bodies/RigidBody.cpp.o: CXX_COMPILER__core_unscanned_Debug /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src/physics/bodies/RigidBody.cpp || cmake_object_order_depends_target_core
+  DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
+  DEP_FILE = CMakeFiles/core.dir/src/physics/bodies/RigidBody.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src
+  OBJECT_DIR = CMakeFiles/core.dir
+  OBJECT_FILE_DIR = CMakeFiles/core.dir/src/physics/bodies
+
+build CMakeFiles/core.dir/src/physics/collision/ContactSolver.cpp.o: CXX_COMPILER__core_unscanned_Debug /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src/physics/collision/ContactSolver.cpp || cmake_object_order_depends_target_core
+  DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
+  DEP_FILE = CMakeFiles/core.dir/src/physics/collision/ContactSolver.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src
+  OBJECT_DIR = CMakeFiles/core.dir
+  OBJECT_FILE_DIR = CMakeFiles/core.dir/src/physics/collision
+
+build CMakeFiles/core.dir/src/physics/collision/SATCollision.cpp.o: CXX_COMPILER__core_unscanned_Debug /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src/physics/collision/SATCollision.cpp || cmake_object_order_depends_target_core
+  DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
+  DEP_FILE = CMakeFiles/core.dir/src/physics/collision/SATCollision.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src
+  OBJECT_DIR = CMakeFiles/core.dir
+  OBJECT_FILE_DIR = CMakeFiles/core.dir/src/physics/collision
 
 
 # =============================================================================
-# Link build statements for STATIC_LIBRARY target glad
+# Link build statements for STATIC_LIBRARY target core
 
 
 #############################################
-# Link the static library libglad.a
+# Link the static library libcore.a
 
-build libglad.a: CXX_STATIC_LIBRARY_LINKER__glad_Debug CMakeFiles/glad.dir/Users/navidnikoo/Dependencies/glad/src/glad.c.o CMakeFiles/glad.dir/src/physics/RigidBody.cpp.o CMakeFiles/glad.dir/src/core/Scene.cpp.o
+build libcore.a: CXX_STATIC_LIBRARY_LINKER__core_Debug CMakeFiles/core.dir/Users/navidnikoo/Dependencies/glad/src/glad.c.o CMakeFiles/core.dir/src/core/Scene.cpp.o CMakeFiles/core.dir/src/core/Camera.cpp.o CMakeFiles/core.dir/src/physics/bodies/RigidBody.cpp.o CMakeFiles/core.dir/src/physics/collision/ContactSolver.cpp.o CMakeFiles/core.dir/src/physics/collision/SATCollision.cpp.o
   ARCH_FLAGS = -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3
   LANGUAGE_COMPILE_FLAGS = -g
-  OBJECT_DIR = CMakeFiles/glad.dir
+  OBJECT_DIR = CMakeFiles/core.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = libglad.a
-  TARGET_PDB = glad.a.dbg
+  TARGET_FILE = libcore.a
+  TARGET_PDB = core.a.dbg
 
 # =============================================================================
 # Object build statements for STATIC_LIBRARY target graphics
@@ -103,7 +127,7 @@ build CMakeFiles/graphics.dir/src/graphics/Renderer.cpp.o: CXX_COMPILER__graphic
   DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
   DEP_FILE = CMakeFiles/graphics.dir/src/graphics/Renderer.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
-  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src
   OBJECT_DIR = CMakeFiles/graphics.dir
   OBJECT_FILE_DIR = CMakeFiles/graphics.dir/src/graphics
 
@@ -111,7 +135,7 @@ build CMakeFiles/graphics.dir/src/graphics/Shader.cpp.o: CXX_COMPILER__graphics_
   DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
   DEP_FILE = CMakeFiles/graphics.dir/src/graphics/Shader.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
-  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src
   OBJECT_DIR = CMakeFiles/graphics.dir
   OBJECT_FILE_DIR = CMakeFiles/graphics.dir/src/graphics
 
@@ -139,13 +163,13 @@ build libgraphics.a: CXX_STATIC_LIBRARY_LINKER__graphics_Debug CMakeFiles/graphi
 #############################################
 # Order-only phony target for PhysicsEngine
 
-build cmake_object_order_depends_target_PhysicsEngine: phony || cmake_object_order_depends_target_glad cmake_object_order_depends_target_graphics
+build cmake_object_order_depends_target_PhysicsEngine: phony || cmake_object_order_depends_target_core cmake_object_order_depends_target_graphics
 
 build CMakeFiles/PhysicsEngine.dir/src/main.cpp.o: CXX_COMPILER__PhysicsEngine_unscanned_Debug /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src/main.cpp || cmake_object_order_depends_target_PhysicsEngine
   DEFINES = -DSHADER_DIR=\"/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/shaders\"
   DEP_FILE = CMakeFiles/PhysicsEngine.dir/src/main.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3 -fcolor-diagnostics
-  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/System/Library/Frameworks
+  INCLUDES = -I/Users/navidnikoo/Dependencies/glad/include -I/Users/navidnikoo/Dependencies/glm-master -I/opt/homebrew/include -I/Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/src -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/PhysicsEngine.dir
   OBJECT_FILE_DIR = CMakeFiles/PhysicsEngine.dir/src
 
@@ -157,9 +181,9 @@ build CMakeFiles/PhysicsEngine.dir/src/main.cpp.o: CXX_COMPILER__PhysicsEngine_u
 #############################################
 # Link the executable PhysicsEngine
 
-build PhysicsEngine: CXX_EXECUTABLE_LINKER__PhysicsEngine_Debug CMakeFiles/PhysicsEngine.dir/src/main.cpp.o | libglad.a libgraphics.a /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/System/Library/Frameworks/OpenGL.framework || libglad.a libgraphics.a
+build PhysicsEngine: CXX_EXECUTABLE_LINKER__PhysicsEngine_Debug CMakeFiles/PhysicsEngine.dir/src/main.cpp.o | libgraphics.a libcore.a /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/System/Library/Frameworks/OpenGL.framework || libcore.a libgraphics.a
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -mmacosx-version-min=15.3
-  LINK_LIBRARIES = -Wl,-rpath,/opt/homebrew/lib  libglad.a  libgraphics.a  -lglfw  -framework OpenGL
+  LINK_LIBRARIES = -Wl,-rpath,/opt/homebrew/lib  libgraphics.a  libcore.a  -lglfw  -framework OpenGL
   LINK_PATH = -L/opt/homebrew/lib
   OBJECT_DIR = CMakeFiles/PhysicsEngine.dir
   POST_BUILD = :
@@ -193,7 +217,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build glad: phony libglad.a
+build core: phony libcore.a
 
 build graphics: phony libgraphics.a
 
@@ -205,7 +229,7 @@ build graphics: phony libgraphics.a
 #############################################
 # Folder: /Users/navidnikoo/Desktop/Projects/C++/PhysicsEngine/cmake-build-debug
 
-build all: phony libglad.a libgraphics.a PhysicsEngine
+build all: phony libcore.a libgraphics.a PhysicsEngine
 
 # =============================================================================
 # Built-in targets
