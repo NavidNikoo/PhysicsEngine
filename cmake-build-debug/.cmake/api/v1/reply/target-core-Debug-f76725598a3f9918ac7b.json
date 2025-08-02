@@ -33,7 +33,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 57,
+				"line" : 58,
 				"parent" : 0
 			},
 			{
@@ -169,7 +169,8 @@
 				8,
 				9,
 				10,
-				11
+				11,
+				13
 			]
 		}
 	],
@@ -245,6 +246,11 @@
 			"compileGroupIndex" : 1,
 			"path" : "src/physics/collision/SATCollision.cpp",
 			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/physics/shapes/SphereShape.h",
+			"sourceGroupIndex" : 1
 		}
 	],
 	"type" : "STATIC_LIBRARY"

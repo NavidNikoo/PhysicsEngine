@@ -34,6 +34,7 @@ add_library(core STATIC
         src/physics/collision/ContactManifold.h
         src/physics/collision/SATCollision.h
         src/physics/collision/SATCollision.cpp
+        src/physics/shapes/SphereShape.h
 )
 
 

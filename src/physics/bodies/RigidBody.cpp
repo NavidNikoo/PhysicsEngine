@@ -8,10 +8,10 @@
 #include <cfloat>
 
 // === Damping & Limits (easy to tune) ===
-constexpr float LINEAR_DAMPING = 0.96f;
-constexpr float ANGULAR_DAMPING = 0.93f;
-constexpr float MAX_LINEAR_VELOCITY = 30.0f;
-constexpr float MAX_ANGULAR_VELOCITY = 15.0f;
+constexpr float LINEAR_DAMPING = 0.99f;
+constexpr float ANGULAR_DAMPING = 0.95f;
+constexpr float MAX_LINEAR_VELOCITY = 8.0f;
+constexpr float MAX_ANGULAR_VELOCITY = 5.0f;
 constexpr float SLEEP_THRESHOLD = 0.01f;
 constexpr float ANGULAR_SLEEP_THRESHOLD = 0.01f;
 

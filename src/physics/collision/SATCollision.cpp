@@ -81,13 +81,13 @@ ContactManifold SATCollision::DetectCollision(const RigidBody& a, const RigidBod
         }
     }
 
+    // SAT test: find axis of least penetration
     for (const glm::vec3& axis : axes) {
         float overlap = GetOverlapOnAxis(a, b, axis);
         if (overlap < 0.0f) {
             manifold.hasCollision = false;
-            return manifold;
+            return manifold;  // Separating axis found
         }
-
         if (overlap < minOverlap) {
             minOverlap = overlap;
             smallestAxis = glm::normalize(axis);
@@ -102,85 +102,58 @@ ContactManifold SATCollision::DetectCollision(const RigidBody& a, const RigidBod
 
     glm::vec3 collisionNormal = shouldFlip ? -smallestAxis : smallestAxis;
     manifold.penetration = minOverlap;
+    manifold.normal = collisionNormal;
 
-    const RigidBody* ref = &a;
-    const RigidBody* inc = &b;
-    auto refAxes = aAxes;
-    auto incAxes = bAxes;
-    float maxRefDot = -1.0f;
-    int refFaceIdx = 0;
-    for (int i = 0; i < 3; ++i) {
-        float dotVal = glm::abs(glm::dot(refAxes[i], collisionNormal));
-        if (dotVal > maxRefDot) {
-            maxRefDot = dotVal;
-            refFaceIdx = i;
+    // === Generate multiple contact points using corners of B ===
+    glm::mat3 rotB = glm::toMat3(b.orientation);
+    glm::vec3 halfB = b.shape->halfExtents;
+
+    std::vector<glm::vec3> corners;
+    for (int x = -1; x <= 1; x += 2) {
+        for (int y = -1; y <= 1; y += 2) {
+            for (int z = -1; z <= 1; z += 2) {
+                glm::vec3 localCorner = glm::vec3(x, y, z) * halfB;
+                glm::vec3 worldCorner = b.position + rotB * localCorner;
+                corners.push_back(worldCorner);
+            }
         }
     }
 
-    glm::vec3 refNormal = refAxes[refFaceIdx] * ((glm::dot(refAxes[refFaceIdx], collisionNormal) > 0) ? 1.0f : -1.0f);
+    float contactThreshold = 0.05f;
 
+    // Surface point of A (top surface along normal)
+    glm::vec3 planePoint = a.position + collisionNormal * glm::dot(a.shape->halfExtents, collisionNormal);
 
-    glm::vec3 incidentVerts[4];
-    ComputeIncidentFace(collisionNormal, *inc, incidentVerts);
+    for (const auto& corner : corners) {
+        float dist = glm::dot(corner - planePoint, collisionNormal);
+        float penetration = -dist;
 
-    glm::mat3 refRot = glm::toMat3(ref->orientation);
-    glm::vec3 refHalf = ref->shape->halfExtents;
-    glm::vec3 refCenter = ref->position;
-
-    glm::vec3 localNormal = glm::transpose(refRot) * collisionNormal;
-    int faceIdx = 0;
-    glm::vec3 absNormal = glm::abs(localNormal);
-    if (absNormal.y > absNormal.x) faceIdx = 1;
-    if (absNormal.z > absNormal[faceIdx]) faceIdx = 2;
-
-    glm::vec3 refPos = refCenter + refNormal * refHalf[faceIdx];
-
-    glm::vec3 refU = refAxes[(faceIdx + 1) % 3];
-    glm::vec3 refV = refAxes[(faceIdx + 2) % 3];
-    float halfU = refHalf[(faceIdx + 1) % 3];
-    float halfV = refHalf[(faceIdx + 2) % 3];
-
-    glm::vec3 clipA = refU;
-    float clipAOffset = glm::dot(clipA, refPos + refU * halfU);
-
-    glm::vec3 clipB = -refU;
-    float clipBOffset = glm::dot(clipB, refPos - refU * halfU);
-
-    glm::vec3 clipC = refV;
-    float clipCOffset = glm::dot(clipC, refPos + refV * halfV);
-
-    glm::vec3 clipD = -refV;
-    float clipDOffset = glm::dot(clipD, refPos - refV * halfV);
-
-    glm::vec3 clipped1[4], clipped2[4], clipped3[4], clipped4[4];
-    int count = Clip(clipA, clipAOffset, incidentVerts, clipped1);
-    count = Clip(clipB, clipBOffset, clipped1, clipped2);
-    count = Clip(clipC, clipCOffset, clipped2, clipped3);
-    count = Clip(clipD, clipDOffset, clipped3, clipped4);
-
-    if (count == 0) {
-        manifold.hasCollision = false;
-        return manifold;
-    }
-
-    for (int i = 0; i < count; ++i) {
-        float depth = glm::dot(refNormal, refPos - clipped4[i]);
-        if (!std::isfinite(depth) || depth < 0.0f || depth > minOverlap + 0.1f)
-            continue; // skip invalid points
-        float paddedDepth = depth + 0.01f;
-        if (paddedDepth >= 0.001f && paddedDepth <= minOverlap + 0.1f) {
+        if (penetration >= -contactThreshold) {
             ContactPoint cp;
-            cp.point = clipped4[i];
-            cp.normal = refNormal;
-            cp.penetration = paddedDepth;
+            cp.point = corner;
+            cp.normal = collisionNormal;
+            cp.penetration = penetration;
             manifold.contacts.push_back(cp);
         }
     }
 
-    manifold.normal = refNormal;
-    manifold.hasCollision = !manifold.contacts.empty();
+    if (!manifold.contacts.empty()) {
+        manifold.hasCollision = true;
+        std::cout << "📌 Generated " << manifold.contacts.size()
+                  << " contacts from box corners.\n";
+    } else {
+        manifold.hasCollision = false;
+    }
+
+    std::cout << "🎯 SAT Collision detected!\n";
+    std::cout << "   Bodies: A=" << glm::to_string(a.position) << " B=" << glm::to_string(b.position) << std::endl;
+    std::cout << "   Penetration: " << manifold.penetration << std::endl;
+    std::cout << "   Normal: " << glm::to_string(manifold.normal) << std::endl;
+    std::cout << "   Contact count: " << manifold.contacts.size() << std::endl;
+
     return manifold;
 }
+
 
 int SATCollision::Clip(const glm::vec3& n, float c, glm::vec3* input, glm::vec3* output) {
     int count = 0;

@@ -38,26 +38,27 @@ void Scene::StepPhysics(float dt) {
     dt = std::clamp(dt, 0.001f, 0.016f);
 
     std::cout << "\n====================[ StepPhysics ]====================\n";
-    std::cout << "Bodies in scene: " << bodies.size() << " | dt = " << dt << "\n";
 
+    // 1. APPLY FORCES AND INTEGRATE VELOCITIES FIRST
     for (RigidBody& body : bodies) {
         if (body.isStatic || body.isSleeping) continue;
 
         const glm::vec3 gravity(0.0f, -9.81f, 0.0f);
         body.ApplyForce(gravity * body.mass);
 
+        // Integrate velocities (but NOT positions yet)
         body.IntegrateVelocity(dt);
         body.IntegrateAngularVelocity(dt);
-        body.IntegrateOrientation(dt);
+
+        // DEBUG: Check for fast-moving objects
+        float speed = glm::length(body.velocity);
+        if (speed > 10.0f) {
+            std::cout << "⚠️ Fast object detected: speed=" << speed
+                      << " pos=" << glm::to_string(body.position) << std::endl;
+        }
     }
 
-    const int solverIterations = 15;
-    std::vector<size_t> order(bodies.size());
-    std::iota(order.begin(), order.end(), 0);
-    std::sort(order.begin(), order.end(), [&](size_t i, size_t j) {
-        return bodies[i].GetAABB().min.x < bodies[j].GetAABB().min.x;
-    });
-
+    // 2. COLLISION DETECTION AND RESPONSE
     std::vector<ContactManifold> manifolds;
     int potentialPairs = 0, aabbPass = 0, satPass = 0;
 
@@ -68,7 +69,6 @@ void Scene::StepPhysics(float dt) {
             const AABB& aabbB = bodies[j].GetAABB();
 
             if (!aabbA.Overlaps(aabbB)) {
-                std::cout << "❌ AABB rejected: body " << i << " and body " << j << "\n";
                 continue;
             }
 
@@ -81,8 +81,6 @@ void Scene::StepPhysics(float dt) {
                 std::cout << "✅ SAT collision detected. Contacts: " << m.contacts.size()
                           << ", Penetration: " << m.penetration << "\n";
                 manifolds.push_back(m);
-            } else {
-                std::cout << "❌ SAT no collision for body " << i << " and body " << j << "\n";
             }
         }
     }
@@ -91,30 +89,25 @@ void Scene::StepPhysics(float dt) {
               << ", AABB pass: " << aabbPass
               << ", SAT pass: " << satPass << "\n";
 
+    // 3. RESOLVE COLLISIONS
     for (ContactManifold& manifold : manifolds) {
-        if (!manifold.hasCollision || manifold.contacts.empty()) {
-            std::cout << "🚫 Skipped contact resolution (no contacts)\n";
-            continue;
-        } else {
-            std::cout << "✅ Resolving manifold with " << manifold.contacts.size()
-                      << " contacts, Penetration = " << manifold.penetration << "\n";
-        }
+        if (!manifold.hasCollision || manifold.contacts.empty()) continue;
 
         for (const ContactPoint& cp : manifold.contacts) {
-            std::cout << "🧩 Contact | Point: " << glm::to_string(cp.point)
-                      << ", Normal: " << glm::to_string(cp.normal)
-                      << ", Pen: " << cp.penetration << "\n";
-
             solver.Resolve(*manifold.a, *manifold.b, cp.point, cp.normal, cp.penetration, dt);
         }
     }
 
+    lastFrameManifolds = manifolds;
+    // 4. INTEGRATE POSITIONS ONLY ONCE (AFTER collision resolution)
     for (RigidBody& body : bodies) {
         if (body.isStatic || body.isSleeping) continue;
 
+        // NOW integrate positions with the corrected velocities
         body.IntegratePosition(dt);
         body.IntegrateOrientation(dt);
 
+        // Sleep/wake logic
         float velSq = glm::length2(body.velocity);
         float angVelSq = glm::length2(body.angularVelocity);
         const float velTol = 0.0001f;
@@ -144,7 +137,6 @@ void Scene::StepPhysics(float dt) {
 
     std::cout << "====================[ End StepPhysics ]====================\n";
 }
-
 
 void Scene::Render(Renderer& renderer, Shader& shader) {
     for (RigidBody& body : bodies) {
@@ -222,3 +214,60 @@ void Scene::HandleInput(GLFWwindow* window) {
     rPressedLastFrame = rPressed;
 }
 
+// Add this method to your Scene class
+void Scene::StepPhysicsWithSubdivision(float dt) {
+    dt = std::clamp(dt, 0.001f, 0.016f);
+
+    // Check if any object is moving too fast
+    float maxSpeed = 0.0f;
+    for (const RigidBody& body : bodies) {
+        if (!body.isStatic) {
+            maxSpeed = std::max(maxSpeed, glm::length(body.velocity));
+        }
+    }
+
+    // If objects are moving too fast, subdivide the timestep
+    int subdivisions = 1;
+    const float maxSafeSpeed = 3.0f; // Lower threshold for better collision detection
+    if (maxSpeed > maxSafeSpeed) {
+        subdivisions = static_cast<int>(std::ceil(maxSpeed / maxSafeSpeed));
+        subdivisions = std::min(subdivisions, 8); // Increase max subdivisions
+        std::cout << "⚡ Fast motion detected (" << maxSpeed << " m/s), using "
+                  << subdivisions << " subdivisions\n";
+    }
+
+    float subDt = dt / subdivisions;
+    for (int i = 0; i < subdivisions; i++) {
+        StepPhysics(subDt);
+    }
+}
+
+// Add this method to your Scene class to check for potential tunneling
+bool Scene::WouldTunnel(const RigidBody& body, float dt) {
+    if (body.isStatic) return false;
+
+    float speed = glm::length(body.velocity);
+    float minDimension = std::min({body.size.x, body.size.y, body.size.z});
+    float distanceThisFrame = speed * dt;
+
+    // If object moves more than half its size in one frame, it might tunnel
+    return distanceThisFrame > (minDimension * 0.5f);
+}
+
+void Scene::RenderContactPoints(Renderer& renderer, const glm::mat4& viewProj) {
+    // Store contact points from the last physics step
+    for (const ContactManifold& manifold : lastFrameManifolds) {
+        for (const ContactPoint& cp : manifold.contacts) {
+            // Draw a small red sphere at each contact point
+            glm::mat4 contactTransform = glm::translate(glm::mat4(1.0f), cp.point);
+            contactTransform = glm::scale(contactTransform, glm::vec3(0.1f)); // Small sphere
+
+            // You can implement this as a small cube or sphere
+            // renderer.DrawDebugPoint(cp.point, glm::vec3(1.0f, 0.0f, 0.0f), viewProj);
+
+            // Also draw the normal as a line
+            glm::vec3 normalEnd = cp.point + cp.normal * 0.5f;
+            // renderer.DrawDebugLine(cp.point, normalEnd, glm::vec3(0.0f, 1.0f, 0.0f), viewProj);
+        }
+    }
+}

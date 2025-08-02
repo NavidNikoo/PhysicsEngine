@@ -106,7 +106,7 @@ int main() {
 
         // Physics updates at fixed time step
         while (accumulator >= fixedDeltaTime) {
-            scene.StepPhysics(fixedDeltaTime);
+            scene.StepPhysicsWithSubdivision(fixedDeltaTime);
             accumulator -= fixedDeltaTime;
         }
 

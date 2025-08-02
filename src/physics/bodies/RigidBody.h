@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include "physics/collision/Collider.h"
 #include "physics/shapes/BoxShape.h"
+#include "physics/shapes/SphereShape.h"
 #include <glm/gtc/quaternion.hpp>
 #include <memory>
 
@@ -27,10 +28,10 @@ public:
     glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);  // For rotation
     glm::mat3 inverseInertiaTensor;
 
-
-
     Collider collider; // Each RigidBody has a collider now
     std::shared_ptr<BoxShape> shape;
+    std::shared_ptr<SphereShape> sphereShape;
+
 
     RigidBody(); // Default constructor
     RigidBody(float m, const glm::vec3& pos); // Constructor with mass and position (declaration only here!)
@@ -46,6 +47,8 @@ public:
     void IntegrateOrientation(float dt);
     void ComputeInertia();
     void SetShapeAndSize(const glm::vec3& fullSize);
+    void SetSphere(float radius);
+
 
     AABB GetAABB() const;
 
